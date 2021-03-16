@@ -6,6 +6,7 @@ Ingest Linux daily SAR output into PostgreSQL with Grafana Dashboard
 Assumption is VM/host is a CentOS/RHEL based version 7
 
 1. PostgreSQL 11 or later server & clients 
+1. Grafana 6.1.6 or later
 1. The usual awk, sed, egrep utilities
 
 
@@ -43,6 +44,35 @@ done
 ```
 Above script crawls through `~/Customers/CustomerX` looking for all sar files.  All will be associated with group 'Greenplum Cluster X' which will be present at the top of the the Grafana dashboard.
 
+Artifacts produced in database after a successful `sar_parse.sh` are:
+1. Group name inserted into public.groups if it does not exist
+1. Host name inserted into public.hosts if it does not exist
+1. sar tables populated
+1. public.summary materialized view refreshed with data
+
+
+
+### Group Attributes - REQUIRED
+
+Defining attributes per group is required for existing queries.  These attributes are helpful to reduce graph noise such as identifying data volumes.  Attributes currently supported are:
+1. datavolX where X is unique per group identifying data volumes
+1. net.interconnect defining Greenplum private interconnect
+
+```
+INSERT INTO public.group.attributes (group_id, name, val) VALUES
+ (1, 'datavol1', 'dev8-16'),
+ (1, 'datavol2', 'dev8-32');
+
+INSERT INTO public.group.attributes (group_id, name, val) VALUES
+ (1, 'net.interconnect', 'bond0');
+```
+
+
+## Troubleshooting
+
+1. If no data is present on dashboard, be sure the right period is selected.
+1. Data load issues may occur if path to sar files when loading contain spaces.
+1. Database connectivity issues will be the usual check pg_hba.conf, database is running, database does not have a high impedence air gap (disconnected), role exists, right password defined.
 
 
 ## Things To Do
