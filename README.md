@@ -21,8 +21,8 @@ Assumption is VM/host is a CentOS/RHEL based version 7
 ## Things To Do
 
 1. Use more data supplied by SAR files
-  1. swap & memory could be useful to at least rule out issues
+   1. swap & memory could be useful to at least rule out issues
 1. Provide more inline commentary how to read graphs
-  1. Example, if overall disk util% compared to 8am to 5pm are identical then suggest using off hours for creation of summary tables and materialized views to streamline daytime report queries
+   1. Example, if overall disk util% compared to 8am to 5pm are identical then suggest using off hours for creation of summary tables and materialized views to streamline daytime report queries
 1. 
 
