@@ -1,0 +1,1707 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_SARDB",
+      "label": "sardb",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "postgres",
+      "pluginName": "PostgreSQL"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "6.1.6"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 1615926213132,
+  "links": [],
+  "panels": [
+    {
+      "cacheTimeout": null,
+      "content": "\n# Greenplum Cluster Performance\n\nPurpose is to identify _possible_ bottlenecks and _possibly_ failing hardware but __ALSO__ potential opportunities.\n\nAll information and interpretation should be used as a guide to streamline an architectural and performance analysis.\n\nOpportunities may be a mostly idle cluster during off hours when rollups, ETL jobs, or materialized views may be created alleviating work hour loads.\n\n\n\n",
+      "gridPos": {
+        "h": 5,
+        "w": 22,
+        "x": 0,
+        "y": 0
+      },
+      "id": 22,
+      "links": [],
+      "mode": "markdown",
+      "pluginVersion": "6.1.6",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": false,
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "",
+      "type": "text"
+    },
+    {
+      "columns": [],
+      "datasource": "${DS_SARDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 6,
+        "w": 22,
+        "x": 0,
+        "y": 5
+      },
+      "id": 20,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "name",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short",
+          "valueMaps": [
+            {
+              "text": "Cores / Seg Host",
+              "value": "cores"
+            },
+            {
+              "text": "Data Volumes / Seg host",
+              "value": "data volumes"
+            },
+            {
+              "text": "Interconnect Device",
+              "value": "interconnect"
+            },
+            {
+              "text": "Master Hosts",
+              "value": "master hosts"
+            },
+            {
+              "text": "Segment Hosts",
+              "value": "segment hosts"
+            }
+          ]
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT * FROM public.summary WHERE group_name = '$v_group_name' ORDER BY 1, 2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Group Summary",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "datasource": "${DS_SARDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 10,
+        "w": 14,
+        "x": 0,
+        "y": 11
+      },
+      "id": 6,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT hostname, device, avg(rd_sec_psec)/2 AS avg_read_k_psec, avg(wr_sec_psec)/2 AS avg_write_k_psec\n  FROM disk_stats_v\n WHERE device IN ( SELECT ga.val FROM group_attribs ga JOIN groups g ON (ga.group_id=g.id) WHERE g.name = '$v_group_name' AND ga.name ~'^datavol' )\n   AND group_name = '$v_group_name'\n   AND master = 'f'\n   AND $__timeFilter(ts)\n GROUP BY 1, 2\n ORDER BY 1, 2;",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "usr_pct"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cpu",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Host-Data Volume Average Read & Write",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "datasource": "${DS_SARDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 10,
+        "w": 11,
+        "x": 0,
+        "y": 21
+      },
+      "id": 11,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 2,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH src AS (\nSELECT hostname, date_trunc('minute',ts) AS ts, device, rd_sec_psec/2 AS rd_kb_psec, wr_sec_psec/2 AS wr_kb_psec, await, util_pct\n  FROM disk_stats_v\n WHERE device IN ( SELECT ga.val FROM group_attribs ga JOIN groups g ON (ga.group_id=g.id) WHERE g.name = '$v_group_name' AND ga.name ~'^datavol' )\n   AND master = 'f'\n   AND $__timeFilter(ts)\n   AND group_name = '$v_group_name'\n\n), avg_utils AS (\nSELECT d.ts, d.hostname, d.device, avg(d.util_pct)\n  FROM src d\n GROUP BY\n   GROUPING SETS ( (1, 2, 3), (d.ts) )\n ORDER BY 1, 2, 3\n), outliers AS (\nSELECT ts1.ts, ts2.hostname, ts2.device, ts1.avg AS period_avg\n     , CASE WHEN ts1.avg > ts2.avg then '>' ELSE '<' END AS op\n     , ts2.avg\n  FROM (SELECT ts,avg FROM avg_utils WHERE hostname IS NULL) AS ts1\n       JOIN\n       (SELECT * FROM avg_utils WHERE hostname IS NOT NULL) AS ts2\n       ON (ts1.ts = ts2.ts)\n WHERE ts2.avg < (0.8 * ts1.avg)\n ORDER BY 2, 3, 1\n), totals AS (\n  SELECT s.hostname, s.device, count(*) FROM src s GROUP BY 1,2\n)\nSELECT o.hostname, o.device\n     , count(DISTINCT format('%s %s %s',o.ts,o.hostname,o.device)) AS outlier_count\n     , s.count AS total_count\n  FROM totals s LEFT JOIN outliers o ON (s.hostname = o.hostname AND s.device = o.device)\n WHERE o.hostname IS NOT NULL\n GROUP BY 1, 2, 4\n ORDER BY 3\n;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "usr_pct"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cpu",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Disk Underperformers < 20% of current Avg %Util (Potential Skew / Failing Hardware)",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "datasource": "${DS_SARDB}",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 11,
+        "y": 21
+      },
+      "id": 10,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 2,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "none"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH src AS (\nSELECT hostname, date_trunc('minute',ts) AS ts, device, rd_sec_psec/2 AS rd_kb_psec, wr_sec_psec/2 AS wr_kb_psec, await, util_pct\n  FROM disk_stats_v\n WHERE device IN ( SELECT ga.val FROM group_attribs ga JOIN groups g ON (ga.group_id=g.id) WHERE g.name = '$v_group_name' AND ga.name ~'^datavol'  )\n   AND master = 'f'\n   AND $__timeFilter(ts)\n   AND group_name = '$v_group_name'\n\n), avg_utils AS (\nSELECT d.ts, d.hostname, d.device, avg(d.util_pct)\n  FROM src d\n GROUP BY\n   GROUPING SETS ( (1, 2, 3), (d.ts) )\n ORDER BY 1, 2, 3\n), outliers AS (\nSELECT ts1.ts, ts2.hostname, ts2.device, ts1.avg AS period_avg\n     , CASE WHEN ts1.avg > ts2.avg then '>' ELSE '<' END AS op\n     , ts2.avg\n  FROM (SELECT ts,avg FROM avg_utils WHERE hostname IS NULL) AS ts1\n       JOIN\n       (SELECT * FROM avg_utils WHERE hostname IS NOT NULL) AS ts2\n       ON (ts1.ts = ts2.ts)\n WHERE ts2.avg > (1.2 * ts1.avg)\n ORDER BY 2, 3, 1\n), totals AS (\n  SELECT s.hostname, s.device, count(*) FROM src s GROUP BY 1,2\n)\nSELECT o.hostname, o.device\n     , count(DISTINCT format('%s %s %s',o.ts,o.hostname,o.device)) AS outlier_count\n     , s.count AS total_count\n  FROM totals s LEFT JOIN outliers o ON (s.hostname = o.hostname AND s.device = o.device)\n WHERE o.hostname IS NOT NULL\n GROUP BY 1, 2, 4\n ORDER BY 3\n;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "usr_pct"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "cpu",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Disk Over Utilized > 20% of current Avg %Util (Potential Skew / Failing Hardware)",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 18,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "avg_util_pct",
+          "linewidth": 3
+        },
+        {
+          "alias": "avg_plus_1dev",
+          "linewidth": 3
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH stats AS (\nSELECT\n  date_trunc('day', d.ts) AS \"time\",\n  stddev(d.util_pct) AS stddev_util_pct,\n  avg(d.util_pct) AS avg_util_pct\nFROM disk_stats_v d JOIN groups g ON (d.group_name = g.name) JOIN group_attribs ga ON (g.id = ga.group_id)\nWHERE\n  ga.name ~ '^datavol'\n  AND d.device = ga.val\n  AND group_name = '$v_group_name'\n  AND d.master = 'f'\n  AND $__timeFilter(d.ts)\n  AND extract('hour' from d.ts) BETWEEN 8 AND 17\nGROUP BY 1\n)\nSELECT \"time\"\n    -- , round(stddev_util_pct::numeric, 2) AS stddev_util_pct\n     , round(avg_util_pct::numeric, 2) AS avg_util_pct\n     , CASE WHEN stddev_util_pct + avg_util_pct < 100.00 THEN round((stddev_util_pct + avg_util_pct)::numeric, 2)\n            ELSE 100.00\n       END AS avg_plus_1dev\n  FROM stats\nORDER BY 1;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Average Daily Disk %Util & Average + 1st Deviation",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "105",
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 16,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "\nWITH stats AS (\nSELECT\n  date_trunc('day', d.ts) AS \"time\",\n  stddev(d.util_pct) AS stddev_util_pct,\n  avg(d.util_pct) AS avg_util_pct\nFROM disk_stats_v d JOIN groups g ON (d.group_name = g.name) JOIN group_attribs ga ON (g.id = ga.group_id)\nWHERE\n  ga.name ~ '^datavol'\n  AND d.device = ga.val\n  AND group_name = '$v_group_name'\n  AND d.master = 'f'\n  AND $__timeFilter(d.ts)\n  AND extract('hour' from d.ts) BETWEEN 8 AND 17\nGROUP BY 1\n)\nSELECT \"time\"\n     , round(avg_util_pct::numeric, 2) AS avg_util_pct\n     , CASE WHEN stddev_util_pct + avg_util_pct < 100.00 THEN round((stddev_util_pct + avg_util_pct)::numeric, 2)\n            ELSE 100.00\n       END AS avg_plus_1dev\n  FROM stats\nORDER BY 1;\n\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "bwrtn_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bwrite_psec"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "disk_io",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Overall Cluster Disk %Util between 8am and 5pm daily",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percent",
+          "label": null,
+          "logBase": 1,
+          "max": "105",
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "id": 9,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(ts,$__interval),\n  sum(bread_psec) AS \"bread_psec\",\n  sum(bwrtn_psec) AS \"bwrite_psec\"\nFROM disk_io_v\nWHERE $__timeFilter(ts)\n  AND group_name = '$v_group_name'\n  AND master = 'f'\nGROUP BY 1\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "bwrtn_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bwrite_psec"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "disk_io",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Overall Cluster Disk Read/Write",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "description": "Percentage of elapsed time during which I/O requests were issued to the  device  (bandwidth  utilization for the device). Device saturation occurs when this value is close to 100%.",
+      "fill": 1,
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 57
+      },
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "\nSELECT\n  d.ts AS \"time\",\n  d.hostname||':'||d.device AS metric,\n  d.util_pct\nFROM disk_stats_v d\nWHERE\n  $__timeFilter(d.ts)\n  AND d.device IN ( SELECT ga.val FROM group_attribs ga JOIN groups g ON (ga.group_id=g.id) WHERE g.name = '$v_group_name' AND ga.name ~'^datavol' )\n  AND group_name = '$v_group_name'\n  AND master = 'f'\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk Utilization (max% = # hosts x # datavols)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "description": "Max = cores * hosts * 0.9 (reserved for OS)",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 68
+      },
+      "id": 15,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "blocked",
+          "bars": true,
+          "color": "#F2495C",
+          "lines": false,
+          "yaxis": 1
+        },
+        {
+          "alias": "max_loadavg",
+          "bars": false,
+          "lines": true,
+          "linewidth": 4
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device",
+          "rawQuery": true,
+          "rawSql": "WITH core_count AS (\nSELECT count(distinct core) - 1 AS tally\n  FROM cpu_v\n WHERE group_name = '$v_group_name'\n   AND core != 'all'\n   AND master = 'f'\n), host_count AS (\nSELECT count(*) AS tally\n  FROM group_host gh JOIN groups g ON (g.id = gh.group_id) JOIN hosts h ON (gh.host_id = h.id)\n WHERE g.name = '$v_group_name'\n   AND h.master = 'f'\n)\nSELECT date_trunc('minute',ts) AS \"time\"\n     , sum(ldavg_1) AS ldavg_1_sum\n     , (h.tally * c.tally * 0.9) AS max_loadavg\n     , sum(blocked) AS blocked\n  FROM loadavg_v, core_count c, host_count h\n WHERE $__timeFilter(ts)\n AND group_name = '$v_group_name'\n AND master = 'f'\n GROUP BY 1, 3\n ORDER BY 1;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "await"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "disk_stats",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Loadavg1 compared to \"max\" and blocked processes",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 2,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "description": "The average time (in milliseconds) for I/O requests issued to the device to be served. This includes the time spent by the requests in queue and the time spent servicing them.",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 77
+      },
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  d.ts AS \"time\",\n  d.hostname||':'||d.device AS metric,\n  d.await\nFROM disk_stats_v d\nWHERE\n  $__timeFilter(d.ts) AND d.device IN ( SELECT ga.val FROM group_attribs ga JOIN groups g ON (ga.group_id=g.id) WHERE g.name = '$v_group_name' AND ga.name ~'^datavol' )\n  AND group_name = '$v_group_name'\n  AND master = 'f'\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "await"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "disk_stats",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk Request Wait Time (ms)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "description": "The average time (in milliseconds) for I/O requests issued to the device to be served. This includes the time spent by the requests in queue and the time spent servicing them.",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 86
+      },
+      "id": 14,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "blocked",
+          "bars": false,
+          "color": "#F2495C",
+          "fill": 0,
+          "lines": true,
+          "linewidth": 1,
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device",
+          "rawQuery": true,
+          "rawSql": "WITH disk AS (\n  SELECT date_trunc('minute',ts) AS \"time\", sum(await) AS await FROM disk_stats_v d \n  WHERE device IN (SELECT ga.val FROM group_attribs ga JOIN groups g ON (ga.group_id=g.id) WHERE g.name = '$v_group_name' AND ga.name ~'^datavol')\n     AND $__timeFilter(ts)\n     AND group_name = '$v_group_name'\n     AND master = 'f'\n  GROUP BY 1\n), loadavg AS (\n  SELECT date_trunc('minute',ts) AS \"time\", sum(blocked) AS blocked FROM loadavg_v\n   WHERE $__timeFilter(ts)\n   AND group_name = '$v_group_name'\n   AND master = 'f'\n  GROUP BY 1\n)\nSELECT d.time AS \"time\", d.await, l.blocked\n  FROM disk d JOIN loadavg l ON (d.time = l.time)\nORDER BY d.time;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "await"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "disk_stats",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Disk Request Wait Time (ms) compared to Blocked Processes",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "description": "rxerr - Total number of bad packets received per second\nrxfifo - Number of FIFO overrun errors that happened per second on received packets",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 95
+      },
+      "id": 12,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "rxerr_psec",
+          "yaxis": 2
+        },
+        {
+          "alias": "rxerr_psec",
+          "fill": 0
+        },
+        {
+          "alias": "rxfifo_psec",
+          "fill": 0
+        },
+        {
+          "alias": "rxfifo_psec",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(d.ts,$__interval),\n  sum(d.bread_psec) AS \"bread_psec\",\n  sum(d.bwrtn_psec) AS \"bwrite_psec\",\n  sum(n.rxerr_psec) AS \"rxerr_psec\",\n  sum(n.rxfifo_psec) AS \"rxfifo_psec\"\nFROM disk_io_v d JOIN network_errors_v n ON (d.ts = n.ts AND d.host_id = n.host_id)\nWHERE\n  $__timeFilter(d.ts)\n  AND n.interface = (SELECT ga.val FROM group_attribs ga JOIN groups g ON (ga.group_id=g.id) WHERE g.name='$v_group_name' AND ga.name='net.interconnect')\n  AND d.group_name = '$v_group_name'\n  AND n.group_name = '$v_group_name'\n  AND d.master = 'f'\n  AND n.master = 'f'\nGROUP BY 1\nORDER BY 1\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "bwrtn_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bwrite_psec"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "disk_io",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Overall Cluster Disk Read/Write compared to Network RX errors",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_SARDB}",
+      "fill": 1,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 104
+      },
+      "id": 13,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "ldavg_1",
+          "yaxis": 2
+        },
+        {
+          "alias": "blocked",
+          "yaxis": 2
+        },
+        {
+          "alias": "ldavg_1",
+          "fill": 0
+        },
+        {
+          "alias": "ldavg_1",
+          "linewidth": 3
+        },
+        {
+          "alias": "blocked",
+          "fill": 0
+        },
+        {
+          "alias": "blocked",
+          "linewidth": 3
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(d.ts,$__interval),\n  sum(d.bread_psec) AS \"bread_psec\",\n  sum(d.bwrtn_psec) AS \"bwrite_psec\",\n  sum(l.ldavg_1) AS \"ldavg_1\",\n  sum(l.blocked) AS \"blocked\"\nFROM disk_io_v d JOIN loadavg_v l ON (d.ts = l.ts AND d.host_id = l.host_id)\nWHERE\n  $__timeFilter(d.ts)\n  AND d.group_name = '$v_group_name'\n  AND l.group_name = '$v_group_name'\n  AND d.master = 'f'\n  AND l.master = 'f'\nGROUP BY 1\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bread_psec"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "bwrtn_psec"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "sum"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "bwrite_psec"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "disk_io",
+          "timeColumn": "ts",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Overall Cluster Disk Read/Write compared to Loadavg 1",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "${DS_SARDB}",
+        "definition": "SELECT name FROM groups ORDER BY 1;",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Host Group",
+        "multi": false,
+        "name": "v_group_name",
+        "options": [],
+        "query": "SELECT name FROM groups ORDER BY 1;",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "2020-12-07T23:52:34.440Z",
+    "to": "2020-12-09T00:10:09.453Z"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Workload Analysis Sar Dashboard",
+  "uid": "qqczYc1Mk",
+  "version": 82
+}
