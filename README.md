@@ -55,7 +55,7 @@ Artifacts produced in database after a successful `sar_parse.sh` are:
 ### Group Attributes - REQUIRED
 
 Defining attributes per group is required for existing queries.  These attributes are helpful to reduce graph noise such as identifying data volumes.  Attributes currently supported are:
-1. datavolX where X is unique per group identifying data volumes
+1. datavolX where X is unique per group identifying data volumes where volume names exactly match that in sar disk stats section
 1. net.interconnect defining Greenplum private interconnect
 
 ```
