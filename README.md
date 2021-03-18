@@ -67,6 +67,38 @@ INSERT INTO public.group.attributes (group_id, name, val) VALUES
  (1, 'net.interconnect', 'bond0');
 ```
 
+If data volume(s) are not known, once sar files are ingested they can be easily found with the query:
+```
+SELECT group_name,device,max(rd_sec_psec)
+  FROM disk_stats_v
+ GROUP BY 1,2
+ ORDER BY 1,2;
+ group_name |  device  |    max
+------------+----------+------------
+ Cust1      | dev253-0 |   27318.23
+ Cust1      | dev253-1 |    1037.36
+ Cust1      | dev253-2 |       6.91
+ Cust1      | dev253-3 |       6.91
+ Cust1      | dev253-4 |    1603.45
+ Cust1      | dev253-5 |       6.91
+ Cust1      | dev253-6 |       31.3
+ Cust1      | dev253-7 |     391.61
+ Cust1      | dev253-8 |     2148.2
+ Cust1      | dev253-9 |       6.88
+ Cust1      | dev8-0   | 2072486.35
+ Cust1      | dev8-16  | 2139827.46
+ Cust1      | dev8-32  |    27319.8
+ Cust2      | dev253-0 |     964.74
+ Cust2      | dev253-1 |    7321.53
+ Cust2      | dev253-2 |      36.52
+ Cust2      | dev253-3 |     797.45
+ Cust2      | dev253-4 |     917.76
+ Cust2      | dev253-5 |     774.94
+ Cust2      | dev8-0   |    7546.01
+ Cust2      | dev8-16  |  1001167.9
+ Cust2      | dev8-32  | 1007643.25
+```
+
 
 ## Troubleshooting
 
