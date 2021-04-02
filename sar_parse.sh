@@ -6,21 +6,23 @@
 # * RHEL/CentOS 6 sysstat 9.0.x
 # * RHEL/CentOS 7 sysstat 10.x
 
-. parse_config.sh
+. ./parse_config.sh
 
 usage() {
 	cat << EOMSG
 usage: sar_parse -g GROUP -f SAR_REPORT
 	-f SAR_REPORT          sar report from /var/log/sa
 	-g GROUP_NAME          name of group to create/use
+	-D                     debug, does not remove temp files
 EOMSG
 	exit $1
 }
 
-options="f:g:"
+options="f:g:D"
 
 sar_report=""
 group_name=""
+DEBUG=0
 
 while getopts $options opt
 do
@@ -30,6 +32,9 @@ do
 		;;
 	g)
 		group_name="$OPTARG"
+		;;
+	D)
+		DEBUG=1
 		;;
 	*)
 		echo "unrecognized flag $opt"
@@ -90,23 +95,23 @@ declare -A sar_segs
 
 # [TABLE]="regex of first line in section"
 sar_segs=( 
-	[cpu]="12:00:01 AM     CPU      \%us"
-	[procs]="12:00:01 AM    proc\/s   cswc"
-	[swap]="12:00:01 AM  pswpin\/s pswpou"
-	[pages]="12:00:01 AM  pgpgin\/s pgpgou"
-	[disk_io]="12:00:01 AM       tps      r"
-	[memory_stats]="12:00:01 AM   frmpg\/s   bufp"
-	[memory_usage]="12:00:01 AM kbmemfree kbmemu"
-	[memory_swapped]="12:00:01 AM kbswpfree kbswpu"
-	[hugepages]="12:00:01 AM kbhugfree kbhugu"
-	[file_inode]="12:00:01 AM dentunusd   file"
-	[loadavg]="12:00:01 AM   runq-sz  plist"
-	[disk_stats]="12:00:01 AM       DEV       tps"
-	[network_stats]="12:00:01 AM     IFACE   rxpc"
-	[network_errors]="12:00:01 AM     IFACE   rxer"
-	[nfs_client]="12:00:01 AM    call\/s retran"
-	[nfs_server]="12:00:01 AM   scall\/s badcal"
-	[sockets]="12:00:01 AM    totsck    tcp"
+	[cpu]="12:00:0. AM     CPU      \%us"
+	[procs]="12:00:0. AM    proc\/s   cswc"
+	[swap]="12:00:0. AM  pswpin\/s pswpou"
+	[pages]="12:00:0. AM  pgpgin\/s pgpgou"
+	[disk_io]="12:00:0. AM       tps      r"
+	[memory_stats]="12:00:0. AM   frmpg\/s   bufp"
+	[memory_usage]="12:00:0. AM kbmemfree kbmemu"
+	[memory_swapped]="12:00:0. AM kbswpfree kbswpu"
+	[hugepages]="12:00:0. AM kbhugfree kbhugu"
+	[file_inode]="12:00:0. AM dentunusd   file"
+	[loadavg]="12:00:0. AM   runq-sz  plist"
+	[disk_stats]="12:00:0. AM       DEV       tps"
+	[network_stats]="12:00:0. AM     IFACE   rxpc"
+	[network_errors]="12:00:0. AM     IFACE   rxer"
+	[nfs_client]="12:00:0. AM    call\/s retran"
+	[nfs_server]="12:00:0. AM   scall\/s badcal"
+	[sockets]="12:00:0. AM    totsck    tcp"
 )
 
 for table in "${!sar_segs[@]}"
@@ -119,13 +124,16 @@ do
 	if (length($0)>0)
 		printf("%s %s\n",sar_date,$0);
 	}' "$sar_report" | \
-		egrep -v "Average|^$|12:00:01 AM|CPU" | \
+		egrep -v "Average|^$|12:00:0. AM|CPU" | \
 		sed -e 's/^ //g' -e 's/ \+/|/g' | \
 		awk -v hostid=$host_id '{print hostid"|"substr($0,1,10)" "substr($0,12,8)" "substr($0,21)}' > $tmpfile
 
 	$PSQL -c "\\COPY ${table} FROM '${tmpfile}' WITH CSV DELIMITER '|';"
-
-	rm -f $tmpfile
+	if [ $DEBUG -eq 1 ]; then
+		mv $tmpfile /tmp/${host_id}-${table}
+	else
+		rm -f $tmpfile
+	fi
 done
 
 
