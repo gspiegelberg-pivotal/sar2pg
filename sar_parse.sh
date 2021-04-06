@@ -94,24 +94,25 @@ fi
 declare -A sar_segs
 
 # [TABLE]="regex of first line in section"
+time_regex="[0-1][0-9]:[0-5][0-9]:[0-5][0-9] [AP]M"
 sar_segs=( 
-	[cpu]="12:00:0. AM     CPU      \%us"
-	[procs]="12:00:0. AM    proc\/s   cswc"
-	[swap]="12:00:0. AM  pswpin\/s pswpou"
-	[pages]="12:00:0. AM  pgpgin\/s pgpgou"
-	[disk_io]="12:00:0. AM       tps      r"
-	[memory_stats]="12:00:0. AM   frmpg\/s   bufp"
-	[memory_usage]="12:00:0. AM kbmemfree kbmemu"
-	[memory_swapped]="12:00:0. AM kbswpfree kbswpu"
-	[hugepages]="12:00:0. AM kbhugfree kbhugu"
-	[file_inode]="12:00:0. AM dentunusd   file"
-	[loadavg]="12:00:0. AM   runq-sz  plist"
-	[disk_stats]="12:00:0. AM       DEV       tps"
-	[network_stats]="12:00:0. AM     IFACE   rxpc"
-	[network_errors]="12:00:0. AM     IFACE   rxer"
-	[nfs_client]="12:00:0. AM    call\/s retran"
-	[nfs_server]="12:00:0. AM   scall\/s badcal"
-	[sockets]="12:00:0. AM    totsck    tcp"
+	[cpu]="${time_regex}     CPU      \%us"
+	[procs]="${time_regex}    proc\/s   cswc"
+	[swap]="${time_regex}  pswpin\/s pswpou"
+	[pages]="${time_regex}  pgpgin\/s pgpgou"
+	[disk_io]="${time_regex}       tps      r"
+	[memory_stats]="${time_regex}   frmpg\/s   bufp"
+	[memory_usage]="${time_regex} kbmemfree kbmemu"
+	[memory_swapped]="${time_regex} kbswpfree kbswpu"
+	[hugepages]="${time_regex} kbhugfree kbhugu"
+	[file_inode]="${time_regex} dentunusd   file"
+	[loadavg]="${time_regex}   runq-sz  plist"
+	[disk_stats]="${time_regex}       DEV       tps"
+	[network_stats]="${time_regex}     IFACE   rxpc"
+	[network_errors]="${time_regex}     IFACE   rxer"
+	[nfs_client]="${time_regex}    call\/s retran"
+	[nfs_server]="${time_regex}   scall\/s badcal"
+	[sockets]="${time_regex}    totsck    tcp"
 )
 
 for table in "${!sar_segs[@]}"
@@ -120,15 +121,16 @@ do
 
 	start_marker="${sar_segs[$table]}"
 
+#		egrep -v "Average|^$|..:00:0. .M|CPU" | \
 	awk -v sar_date="$sar_date" '/^'"$start_marker"'/,/^Average:/ {
 	if (length($0)>0)
 		printf("%s %s\n",sar_date,$0);
 	}' "$sar_report" | \
-		egrep -v "Average|^$|12:00:0. AM|CPU" | \
+		egrep -v "Average|^$|CPU" | \
 		sed -e 's/^ //g' -e 's/ \+/|/g' | \
 		awk -v hostid=$host_id '{print hostid"|"substr($0,1,10)" "substr($0,12,8)" "substr($0,21)}' > $tmpfile
 
-	$PSQL -c "\\COPY ${table} FROM '${tmpfile}' WITH CSV DELIMITER '|';"
+	$PSQL -c "\\COPY ${table} FROM '${tmpfile}' WITH CSV DELIMITER '|' HEADER;"
 	if [ $DEBUG -eq 1 ]; then
 		mv $tmpfile /tmp/${host_id}-${table}
 	else
