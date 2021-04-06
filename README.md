@@ -118,3 +118,10 @@ SELECT group_name,device,max(rd_sec_psec)
    1. Example, if overall disk util% compared to 8am to 5pm are identical then suggest using off hours for creation of summary tables and materialized views to streamline daytime report queries
 1. May want to implement partitions by group name at some point
 
+
+## Known Bugs
+
+1. Not all saXX files start at midnight but include 24-hrs of data
+   1. Result is time travel where data starts day 1 at 6am concludes day 2 at 6am
+   1. Data as imported the last 6 hours ends up as day 1 as well
+   1. Working on it (2021-04-06)
