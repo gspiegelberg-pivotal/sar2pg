@@ -22,7 +22,7 @@ BEGIN
   WITH src AS (
   SELECT host_id, device, avg(util_pct), rank() OVER (PARTITION BY host_id ORDER BY avg(util_pct) ASC)
     FROM disk_stats_v
-   WHERE group_name = 'Steelhouse Old Cluster'
+   WHERE group_name = v_group_name
    GROUP BY 1,2
    HAVING avg(util_pct) > 5  -- magic number, do not like
    ORDER BY 1,4
@@ -37,7 +37,7 @@ BEGIN
   INSERT INTO group_attribs (group_id, name, val)
   SELECT distinct g.id AS group_id, device AS name, device AS val
     FROM upd, public.groups g
-   WHERE g.name = 'Steelhouse Old Cluster';
+   WHERE g.name = v_group_name;
 
   REFRESH MATERIALIZED VIEW summary WITH DATA;
 
