@@ -99,6 +99,27 @@ SELECT group_name,device,max(rd_sec_psec)
  Cust2      | dev8-32  | 1007643.25
 ```
 
+## Auto populating group_attribs
+
+Two utility functions are provided to determine `net.interconnect` and resolve data volume issues.
+
+### alter-10012.sql required
+```
+SELECT detect_interconnect('GROUP NAME');
+```
+Artifact produced is a record in `group_attribs` defining `net.interconnect` based upon `network_stats.rxkb_psec`.  DO NOT USE if Greenplum cluster is not active.
+
+
+### alter-10012.sql required
+```
+SELECT detect_datavol('GROUP NAME');
+```
+DO NOT USE if device names are super important!!!  However, useful where data volumes are not consistent.  It will:
+1. Update `disk_stats.device` column renaming devices as `datavolX` to make consistent
+1. Insert appropriate records in `group_attribs`
+
+I have seen varying device names in cloud environments on recovered segment hosts.  Sometimes they may vary and is important from a dashboard standpoint.
+
 
 ## Troubleshooting
 
