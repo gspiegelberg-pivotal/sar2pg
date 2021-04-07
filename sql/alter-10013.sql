@@ -227,12 +227,13 @@ BEGIN
 	  FROM public.hosts h JOIN public.group_host gh ON (h.id = gh.host_id)
 	 WHERE name = v_hostname;
 
-  IF host_id IS NULL THEN
+  IF NOT FOUND THEN
     WITH ins AS (
 			INSERT INTO public.hosts (name, kernel) VALUES ( v_hostname, v_kernel )
 			RETURNING id
 		), ghins AS (
-			INSERT INTO public.group_host (group_id, host_id) VALUES ( v_group_id, host_id )
+			INSERT INTO public.group_host (group_id, host_id)
+			SELECT v_group_id, ins.id FROM ins
 			RETURNING *
 		)
     SELECT INTO host_id ins.id FROM ins;
