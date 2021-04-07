@@ -36,13 +36,13 @@ A useful way to load many files for many hosts at once is a simple script such a
 find ~/Customers/CustomerX -type f -name sar\* | \
 	while read sarfile
 do
-
 	echo "loading $sarfile..."
-	./sar_parse -f $sarfile -g 'Greenplum Cluster X'
-
+	./sar_parse.sh -f $sarfile -g 'Greenplum Cluster X'
 done
 ```
 Above script crawls through `~/Customers/CustomerX` looking for all sar files.  All will be associated with group 'Greenplum Cluster X' which will be present at the top of the the Grafana dashboard.
+
+See `example_load.sh` for semi-usable copy.
 
 Artifacts produced in database after a successful `sar_parse.sh` are:
 1. Group name inserted into public.groups if it does not exist
@@ -140,9 +140,3 @@ I have seen varying device names in cloud environments on recovered segment host
 1. May want to implement partitions by group name at some point
 
 
-## Known Bugs
-
-1. Not all saXX files start at midnight but include 24-hrs of data
-   1. Result is time travel where data starts day 1 at 6am concludes day 2 at 6am
-   1. Data as imported the last 6 hours ends up as day 1 as well
-   1. Working on it (2021-04-06)
