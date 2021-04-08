@@ -225,7 +225,8 @@ DECLARE
 BEGIN
   SELECT INTO host_id h.id
 	  FROM public.hosts h JOIN public.group_host gh ON (h.id = gh.host_id)
-	 WHERE name = v_hostname;
+	 WHERE name = v_hostname
+	   AND gh.group_id = v_group_id;
 
   IF NOT FOUND THEN
     WITH ins AS (
