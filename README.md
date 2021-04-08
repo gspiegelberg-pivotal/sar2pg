@@ -1,13 +1,18 @@
 # sar2pg
 Ingest Linux daily SAR output into PostgreSQL with Grafana Dashboard
 
+## Purpose
+
+At some point we've all looked to iostat, dstat, top, mpstat, vmstat and others to check out system performance and identify possible bottlenecks.  This project was done to pull it all together and provide the ability to view all at once albeit from a historical perspective.
+
+
 ## Requirements
 
 Assumption is VM/host is a CentOS/RHEL based version 7
 
 1. PostgreSQL 11 or later server & clients 
 1. Grafana 6.1.6 or later
-1. The usual awk, sed, egrep utilities
+1. file_fdw extention (used for loading as of alter-10013)
 
 
 ## Setup
@@ -15,8 +20,15 @@ Assumption is VM/host is a CentOS/RHEL based version 7
 1. Create database, database user
 1. Modify pg_hba.conf to permit access for Grafana
 1. Load sql/alter-XXXX.sql files into new database in ascending order
+```
+ls sql/alter-*.sql | while read alter
+do
+	echo $alter
+	psql -d MYDB -f $alter
+done
+```
+1. Above command line can be run repeatedly as new alters come out.  Only those not loaded will take effect.
 1. Create data sources in Grafana for PostgreSQL database
-1. 
 
 
 ## Usage
@@ -33,14 +45,28 @@ A useful way to load many files for many hosts at once is a simple script such a
 ```
 #!/bin/bash
 
+GROUP_NAME="CustomerX"
+
 find ~/Customers/CustomerX -type f -name sar\* | \
 	while read sarfile
 do
 	echo "loading $sarfile..."
-	./sar_parse.sh -f $sarfile -g 'Greenplum Cluster X'
+	./sar_parse.sh -f $sarfile -g "${GROUP_NAME}"
 done
+
+. ./parse_config.sh
+
+PSQL="/usr/bin/psql -qAt -d $dbname -p $dbport -U $dbuser -h $dbhost"
+
+$PSQL -c "SELECT * FROM detect_interconnect('${GROUP_NAME}');"
+$PSQL -c "SELECT * FROM detect_datavols('${GROUP_NAME}');"
+$PSQL -c "REFRESH MATERIALIZED VIEW public.summary WITH DATA;"
 ```
 Above script crawls through `~/Customers/CustomerX` looking for all sar files.  All will be associated with group 'Greenplum Cluster X' which will be present at the top of the the Grafana dashboard.
+
+Optional are the calls to detect_interconnect() and detect_datavols() but they are handy to complete a data load.
+
+Required is the MAT VIEW refresh.
 
 See `example_load.sh` for semi-usable copy.
 
